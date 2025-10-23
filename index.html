@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>活动反馈</title>
+    <style>
+        @keyframes fadeInOut {
+            0%, 100% { opacity: 0; }
+            20%, 80% { opacity: 1; }
+        }
+
+        .loading-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.95);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s, visibility 0.3s;
+            z-index: 1000;
+            color: #ff4d4d;
+        }
+
+        .loading-overlay.visible {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .loading-message {
+            margin-top: 20px;
+            font-family: monospace;
+            font-size: 1.2em;
+            min-height: 1.5em;
+            text-align: center;
+            animation: fadeInOut 2s ease-in-out;
+        }
+
+        .loading-spinner {
+            width: 40px;
+            height: 40px;
+            border: 3px solid rgba(255,77,77,0.2);
+            border-top-color: #ff4d4d;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background-color: #f0f2f5;
+            color: #333;
+            margin: 0;
+            padding: 20px;
+            transition: background-color 1s ease;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: #ffffff;
+            padding: 25px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+        input[type="text"], input[type="email"] {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            box-sizing: border-box; /* 保证padding不撑开宽度 */
+        }
+        button {
+            width: 100%;
+            padding: 15px;
+            background-color: #ff6600; /* 橙色 */
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        
+        /* 隐藏的契约部分 */
+        #contract {
+            display: none;
+            padding: 20px;
+            border: 2px solid #b30000;
+            background-color: #1a0000;
+            color: #ffb3b3;
+            border-radius: 8px;
+        }
+        @keyframes flicker {
+            0%, 100% { opacity: 1; }
+            41.99% { opacity: 1; }
+            42% { opacity: 0; }
+            43% { opacity: 0; }
+            43.01% { opacity: 1; }
+            47.99% { opacity: 1; }
+            48% { opacity: 0; }
+            49% { opacity: 0; }
+            49.01% { opacity: 1; }
+        }
+
+        #contract h1 {
+            color: #ff4d4d;
+            text-align: center;
+            text-shadow: 0 0 10px rgba(255,0,0,0.5);
+            animation: flicker 10s infinite;
+        }
+
+        .creepy-poem {
+            font-family: "Times New Roman", serif;
+            text-align: center;
+            font-style: italic;
+            color: #ff8080;
+            margin: 20px 0;
+            line-height: 1.6;
+        }
+
+        .deleted-text {
+            font-family: monospace;
+            color: #ff6666;
+            text-decoration: line-through;
+            opacity: 0.7;
+        }
+
+        .revealed-text {
+            color: #ff0000;
+            font-weight: bold;
+            margin-left: 10px;
+        }
+
+        #user-name {
+            font-weight: bold;
+            font-size: 1.2em;
+            color: #ffffff;
+            text-shadow: 0 0 8px rgba(255,255,255,0.5);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container" id="form-container">
+        <h2>洛城奇妙夜 - 活动反馈</h2>
+        <p>感谢您参与今晚的活动！为完善CU日后的活动，请留下您的宝贵意见。</p>
+        <div class="form-group">
+            <label for="name">您的名字:</label>
+            <input type="text" id="name" name="name" required placeholder="请输入您的真实姓名">
+            <div id="error-name" class="field-error" style="display:none;color:#b00020;margin-top:6px;font-size:0.95em;">请填写您的名字。</div>
+        </div>
+        <div class="form-group">
+            <label for="email">您的Email:</label>
+            <input type="email" id="email" name="email" required placeholder="用于接收"后续通知"">
+            <div id="error-email" class="field-error" style="display:none;color:#b00020;margin-top:6px;font-size:0.95em;">请填写有效的电子邮箱地址。</div>
+        </div>
+        <div class="form-group">
+            <label for="q1">您是否自愿参与了任何我们组织的活动？</label>
+            <input type="text" id="q1" name="q1" placeholder="是 / 否">
+        </div>
+        <div class="form-group">
+            <label for="q2">您身上全程佩戴了任何“橙色”标记吗？</label>
+            <input type="text" id="q2" name="q2" placeholder="是 / 否">
+        </div>
+        <button id="submit-btn">提交反馈</button>
+    </div>
+
+    <div id="contract">
+        <h1>【灵魂奉献合同】</h1>
+
+        <div class="creepy-poem">
+            来啊，来啊，亲爱的朋友，<br>
+            黑暗中我们共舞一首，<br>
+            橙色标记早已选中你，<br>
+            你的气味，我们都记住。<br>
+            解谜游戏多么有趣，<br>
+            但你可知，真正的谜底？
+        </div>
+
+        <section aria-labelledby="rules-title">
+            <h3 id="rules-title">合同守则</h3>
+            <ol>
+                <li>甲方承认并同意成为祭品，且乃完全自愿。</li>
+                <li>乙方保留对活动解释权与仪式化表述的修改权。</li>
+                <li>乙方收集甲方灵魂填补仪式所需，且甲方不得中途终止协议。</li>
+                <li>本协议一经签订，甲方将被永久编入档案。</li>
+            </ol>
+        </section>
+
+        <div style="text-align: center; margin: 20px 0;">
+            <span class="deleted-text">快逃快逃快逃快逃快逃</span>
+            <span class="revealed-text">你已经逃不掉了</span>
+        </div>
+
+        <hr>
+        <p><strong>甲方：</strong> <span id="party-a"></span></p>
+        <p><strong>乙方：</strong> UCLA / USC / CU</p>
+
+        <p style="font-style: italic; color: #ff6666;">我们都知道你在说谎...</p>
+        <p style="font-family: monospace; letter-spacing: 2px;">我们记住了你的气味，你的名字，你的发色，你的装扮，你踌躇的步伐，你颤抖的双手，你不安的眼神，你的一切一切...</p>
+
+        <hr>
+        <p><strong>档案编号：</strong> #CU-1039-23-<span style="font-family: monospace;">10-31</span></p>
+        <p><strong>祭品姓名:</strong> <span id="user-name"></span></p>
+        <p><strong>你是否"自愿"献出你的灵魂:</strong> <span id="user-q1"></span> <span style="color: #ff4d4d; font-style: italic;">(我们都知道答案)</span></p>
+        <p><strong>橙色标记确认:</strong> <span id="user-q2"></span> <span style="opacity: 0.7;">(标记永远不会消失)</span></p>
+        <p><strong>灵魂信标:</strong> <span id="user-email"></span></p>
+        <p style="font-family: monospace; color: #ff4d4d; text-align: right; font-size: 0.9em;">已编入永久档案</p>
+
+        <hr>
+        <p style="text-align: center; font-size: 1.5em; font-family: monospace; letter-spacing: 3px; color: #ff3333;">...合同成立... <span style="font-size: 0.7em; opacity: 0.7;">永无回头之路</span></p>
+        <p style="text-align: right; font-size: 0.8em; font-style: italic; color: #ff6666; margin-top: 20px;">档案永久保存于 1039 S Olive St</p>
+    </div>
+
+    <!-- Loading 覆盖层 -->
+    <div class="loading-overlay" id="loading-overlay">
+        <div class="loading-spinner"></div>
+        <div class="loading-message" id="loading-message"></div>
+    </div>
+
+    <script>
+        // 加载消息序列
+        const loadingMessages = [
+            '...正在处理您的"反馈"...',
+            "...验证输入...",
+            "...正在扫描1039 S Olive St...",
+            "...数据吻合。档案已锁定。"
+        ];
+
+        // 显示加载消息序列
+        async function showLoadingSequence() {
+            const overlay = document.getElementById('loading-overlay');
+            const message = document.getElementById('loading-message');
+            
+            overlay.classList.add('visible');
+            
+            for (const msg of loadingMessages) {
+                message.textContent = msg;
+                await new Promise(resolve => setTimeout(resolve, 1500)); // 每条消息显示1.5秒
+            }
+            
+            // 最后一条消息多停留一会
+            await new Promise(resolve => setTimeout(resolve, 1000));
+            
+            overlay.classList.remove('visible');
+            return new Promise(resolve => setTimeout(resolve, 300)); // 等待渐隐完成
+        }
+
+        // 关键的JS代码
+        document.getElementById("submit-btn").onclick = async function(event) {
+            // 1. 阻止表单真的"提交"
+            event.preventDefault();
+
+            // 2. 抓取用户输入的值
+            var name = document.getElementById("name").value;
+            var email = document.getElementById("email").value;
+            var q1 = document.getElementById("q1").value;
+            var q2 = document.getElementById("q2").value;
+
+            // 清除之前的错误提示
+            var errName = document.getElementById('error-name');
+            var errEmail = document.getElementById('error-email');
+            errName.style.display = 'none';
+            errEmail.style.display = 'none';
+
+            // 基本校验：名字和邮箱为必填，邮箱做简单格式检查
+            var firstErrorEl = null;
+            if (!name || name.trim() === "") {
+                errName.style.display = 'block';
+                if (!firstErrorEl) firstErrorEl = document.getElementById('name');
+            }
+
+            var emailVal = email || '';
+            var emailRe = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailVal || !emailRe.test(emailVal)) {
+                errEmail.style.display = 'block';
+                if (!firstErrorEl) firstErrorEl = document.getElementById('email');
+            }
+
+            if (firstErrorEl) {
+                firstErrorEl.focus();
+                return; // 阻止后续逻辑
+            }
+
+            // 如果名字为空但校验通过（极端情况），给个默认值
+            if (!name || name.trim() === "") {
+                name = "一位\u201c聪明\u201d的宾客";
+            }
+
+            // 特殊名字检测（不区分大小写），若匹配则跳转到单句页面
+            var nameLower = name.toLowerCase();
+            if (nameLower.indexOf('lin') !== -1 || nameLower.indexOf('aaron') !== -1 || nameLower.indexOf('fuck') !== -1) {
+                // 显示加载序列后再跳转
+                await showLoadingSequence();
+                window.location.href = 'stare.html';
+                return;
+            }
+
+            // 显示加载序列
+            await showLoadingSequence();
+
+            // 3. 把值注入到"契约"中
+            document.getElementById("user-name").textContent = name;
+            document.getElementById("user-email").textContent = email;
+            document.getElementById("user-q1").textContent = q1;
+            document.getElementById("user-q2").textContent = q2;
+            // 注入甲方（将甲方设置为提交的名字）
+            var partyA = document.getElementById('party-a');
+            if (partyA) partyA.textContent = name;
+
+            // 4. 隐藏“表单”，显示“契约”
+            document.getElementById("form-container").style.display = "none";
+            document.getElementById("contract").style.display = "block";
+
+            // 5. 改变背景，增加恐怖感
+            document.body.style.backgroundColor = "#000000";
+        };
+    </script>
+
+</body>
+</html>
