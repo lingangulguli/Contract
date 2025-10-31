@@ -5,150 +5,84 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>活动反馈</title>
     <style>
+        /* CSS 动画 (chaotic-flicker, intensify-flicker, fadeInOut, spin) ... 保持不变 */
+        @keyframes chaotic-flicker {
+            0%, 100% { opacity: 1; } 25% { opacity: 0.7; } 45% { opacity: 0.9; }
+            65% { opacity: 0.8; } 85% { opacity: 0.6; }
+        }
+        @keyframes intensify-flicker {
+            0%, 100% { opacity: 1; } 47% { opacity: 0.8; } 53% { opacity: 0.4; }
+            57% { opacity: 0.9; } 73% { opacity: 0.5; } 89% { opacity: 0.7; }
+        }
         @keyframes fadeInOut {
-            0%, 100% { opacity: 0; }
-            20%, 80% { opacity: 1; }
+            0%, 100% { opacity: 0; } 20%, 80% { opacity: 1; }
         }
-
-        .loading-overlay {
-            position: fixed;
-            inset: 0;
-            background: rgba(0,0,0,0.95);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            opacity: 0;
-            visibility: hidden;
-            transition: opacity 0.3s, visibility 0.3s;
-            z-index: 1000;
-            color: #ff4d4d;
-        }
-
-        .loading-overlay.visible {
-            opacity: 1;
-            visibility: visible;
-        }
-
-        .loading-message {
-            margin-top: 20px;
-            font-family: monospace;
-            font-size: 1.2em;
-            min-height: 1.5em;
-            text-align: center;
-            animation: fadeInOut 2s ease-in-out;
-        }
-
-        .loading-spinner {
-            width: 40px;
-            height: 40px;
-            border: 3px solid rgba(255,77,77,0.2);
-            border-top-color: #ff4d4d;
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-        }
-
         @keyframes spin {
             to { transform: rotate(360deg); }
         }
+        @keyframes flicker {
+            0%, 100% { opacity: 1; } 41.99% { opacity: 1; } 42% { opacity: 0; }
+            43% { opacity: 0; } 43.01% { opacity: 1; } 47.99% { opacity: 1; }
+            48% { opacity: 0; } 49% { opacity: 0; } 49.01% { opacity: 1; }
+        }
 
+        /* Loading Overlay ... 保持不变 */
+        .loading-overlay {
+            position: fixed; inset: 0; background: rgba(0,0,0,0.95);
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            opacity: 0; visibility: hidden; transition: opacity 0.3s, visibility 0.3s;
+            z-index: 1000; color: #ff4d4d;
+        }
+        .loading-overlay.visible { opacity: 1; visibility: visible; }
+        .loading-message {
+            margin-top: 20px; font-family: monospace; font-size: 1.2em;
+            min-height: 1.5em; text-align: center; animation: fadeInOut 2s ease-in-out;
+        }
+        .loading-spinner {
+            width: 40px; height: 40px; border: 3px solid rgba(255,77,77,0.2);
+            border-top-color: #ff4d4d; border-radius: 50%; animation: spin 1s linear infinite;
+        }
+
+        /* Body 和表单 (container, form-group, etc) ... 保持不变 */
         body {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-            background-color: #f0f2f5;
-            color: #333;
-            margin: 0;
-            padding: 20px;
+            background-color: #f0f2f5; color: #333; margin: 0; padding: 20px;
             transition: background-color 1s ease;
         }
         .container {
-            max-width: 600px;
-            margin: 0 auto;
-            background-color: #ffffff;
-            padding: 25px;
-            border-radius: 8px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            max-width: 600px; margin: 0 auto; background-color: #ffffff;
+            padding: 25px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.05);
         }
-        .form-group {
-            margin-bottom: 20px;
-        }
-        label {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: 600;
-        }
+        .form-group { margin-bottom: 20px; }
+        label { display: block; margin-bottom: 8px; font-weight: 600; }
         input[type="text"], input[type="email"] {
-            width: 100%;
-            padding: 12px;
-            border: 1px solid #ccc;
-            border-radius: 6px;
-            box-sizing: border-box; /* 保证padding不撑开宽度 */
+            width: 100%; padding: 12px; border: 1px solid #ccc;
+            border-radius: 6px; box-sizing: border-box;
         }
         button {
-            width: 100%;
-            padding: 15px;
-            background-color: #ff6600; /* 橙色 */
-            color: white;
-            border: none;
-            border-radius: 6px;
-            font-size: 18px;
-            font-weight: bold;
-            cursor: pointer;
+            width: 100%; padding: 15px; background-color: #ff6600; color: white;
+            border: none; border-radius: 6px; font-size: 18px; font-weight: bold; cursor: pointer;
         }
         
-        /* 隐藏的契约部分 */
+        /* 隐藏的契约部分 (contract, creepy-poem, etc) ... 保持不变 */
         #contract {
-            display: none;
-            padding: 20px;
-            border: 2px solid #b30000;
-            background-color: #1a0000;
-            color: #ffb3b3;
-            border-radius: 8px;
+            display: none; padding: 20px; border: 2px solid #b30000;
+            background-color: #1a0000; color: #ffb3b3; border-radius: 8px;
         }
-        @keyframes flicker {
-            0%, 100% { opacity: 1; }
-            41.99% { opacity: 1; }
-            42% { opacity: 0; }
-            43% { opacity: 0; }
-            43.01% { opacity: 1; }
-            47.99% { opacity: 1; }
-            48% { opacity: 0; }
-            49% { opacity: 0; }
-            49.01% { opacity: 1; }
-        }
-
         #contract h1 {
-            color: #ff4d4d;
-            text-align: center;
-            text-shadow: 0 0 10px rgba(255,0,0,0.5);
+            color: #ff4d4d; text-align: center; text-shadow: 0 0 10px rgba(255,0,0,0.5);
             animation: flicker 10s infinite;
         }
-
         .creepy-poem {
-            font-family: "Times New Roman", serif;
-            text-align: center;
-            font-style: italic;
-            color: #ff8080;
-            margin: 20px 0;
-            line-height: 1.6;
+            font-family: "Times New Roman", serif; text-align: center; font-style: italic;
+            color: #ff8080; margin: 20px 0; line-height: 1.6;
         }
-
         .deleted-text {
-            font-family: monospace;
-            color: #ff6666;
-            text-decoration: line-through;
-            opacity: 0.7;
+            font-family: monospace; color: #ff6666; text-decoration: line-through; opacity: 0.7;
         }
-
-        .revealed-text {
-            color: #ff0000;
-            font-weight: bold;
-            margin-left: 10px;
-        }
-
+        .revealed-text { color: #ff0000; font-weight: bold; margin-left: 10px; }
         #user-name {
-            font-weight: bold;
-            font-size: 1.2em;
-            color: #ffffff;
+            font-weight: bold; font-size: 1.2em; color: #ffffff;
             text-shadow: 0 0 8px rgba(255,255,255,0.5);
         }
     </style>
@@ -165,23 +99,30 @@
         </div>
         <div class="form-group">
             <label for="email">您的Email:</label>
-            <input type="email" id="email" name="email" required placeholder="用于接收"后续通知"">
+            <input type="email" id="email" name="email" required placeholder="用于接收后续通知">
             <div id="error-email" class="field-error" style="display:none;color:#b00020;margin-top:6px;font-size:0.95em;">请填写有效的电子邮箱地址。</div>
         </div>
         <div class="form-group">
-            <label for="q1">您是否自愿参与了任何我们组织的活动？</label>
-            <input type="text" id="q1" name="q1" placeholder="是 / 否">
+            <label for="phone">您的手机号:</label>
+            <input type="text" id="phone" name="phone" required placeholder="例：5714137411">
+            <div id="error-phone" class="field-error" style="display:none;color:#b00020;margin-top:6px;font-size:0.95em;">请填写有效的电话号码（数字、空格、+ 和 - 可用）。</div>
         </div>
         <div class="form-group">
-            <label for="q2">您身上全程佩戴了任何“橙色”标记吗？</label>
-            <input type="text" id="q2" name="q2" placeholder="是 / 否">
+            <label for="q1">您是否自愿参与了任何我们组织的活动？</label>
+            <input type="text" id="q1" name="q1" required placeholder="是 / 否">
+            <div id="error-q1" class="field-error" style="display:none;color:#b00020;margin-top:6px;font-size:0.95em;">这是必填项。</div>
+        </div>
+        <div class="form-group">
+            <label for="q2">您身上全程佩戴了任何"橙色"标记吗？</label>
+            <input type="text" id="q2" name="q2" required placeholder="是 / 否">
+            <div id="error-q2" class="field-error" style="display:none;color:#b00020;margin-top:6px;font-size:0.95em;">这是必填项。</div>
         </div>
         <button id="submit-btn">提交反馈</button>
     </div>
 
-    <div id="contract">
-        <h1>【灵魂奉献合同】</h1>
-
+<div id="contract">
+        <h1>【灵魂献祭合同】</h1>
+        
         <div class="creepy-poem">
             来啊，来啊，亲爱的朋友，<br>
             黑暗中我们共舞一首，<br>
@@ -191,8 +132,17 @@
             但你可知，真正的谜底？
         </div>
 
+        <div class="lore-section">
+            <h3>真相：饥饿的建筑</h3>
+            <p>1926年,当这栋建筑在橄榄街1039号拔地而起时,没人知道它的设计图纸上藏着什么。建筑师是个沉默寡言的神秘主义者,他在蓝图的边缘写满了奇怪的符号——那些不是装饰,而是咒语。</p>
+            <p>他相信灵魂是一种能量。不是那种温暖的、虚无缥缈的东西,而是实实在在的、可以被收集的燃料。普通人的灵魂平淡无味,像白开水。但那些聪明的、有野心的、在恐惧中燃烧的灵魂——那才是美味。</p>
+            <p>他用三年时间建造这栋房子。每一根梁木、每一块砖石、每一个转角都经过精心计算。这不仅仅是一栋建筑,这是一个容器,一个陷阱,一张嘴。</p>
+            <p>1929年2月,第一届奥斯卡颁奖典礼的派对在这里举行。那天晚上,建筑师站在人群中央,看着好莱坞最聪明的头脑们在他的杰作里觥筹交错。午夜时分,他独自走进了地下室。第二天,人们只找到了他的衣服。</p>
+            <p style="text-align: center; font-style: italic; opacity: 1; color: #ff6666; font-size: 1.1em;">房子咀嚼着它的创造者,第一次尝到了"理解"的滋味。它醒了过来。</p>
+        </div>
+
         <section aria-labelledby="rules-title">
-            <h3 id="rules-title">合同守则</h3>
+            <h3 id="rules-title">合同守则 (条款摘录)</h3>
             <ol>
                 <li>甲方承认并同意成为祭品，且乃完全自愿。</li>
                 <li>乙方保留对活动解释权与仪式化表述的修改权。</li>
@@ -201,38 +151,89 @@
             </ol>
         </section>
 
-        <div style="text-align: center; margin: 20px 0;">
-            <span class="deleted-text">快逃快逃快逃快逃快逃</span>
-            <span class="revealed-text">你已经逃不掉了</span>
+        <div class="lore-section">
+            <h3>房子饿了</h3>
+            <p>不是每天都饿,而是每年一次,像某种可怕的新陈代谢周期。它需要吃东西——不是木材或石头,而是思考本身。解谜时神经元的火花,恐惧时肾上腺素的爆发,野心在胸腔里的灼烧——这些才是它的食物。</p>
+            <p>但房子没有手,没有声音,没有移动的能力。它需要帮手。所以它学会了"选择"。每一个走进它大门的人,房子都能感知到——他们的智商,他们的欲望,他们灵魂的"味道"。大多数人乏善可陈,但总有那么几个,闪烁着特别的光芒。</p>
+            <p>房子会在他们的梦里低语。会让墙壁在他们眼角余光处扭曲。会制造巧合,让他们一次次回来。直到他们理解了自己的角色:不是房客,而是祭司。</p>
+            <p>大学云集的洛杉矶成为了完美的猎场。那些最聪明的年轻人,带着过剩的自信和对未来的渴望,自己走进了陷阱。房子给了他们一个"俱乐部",一个身份,一个秘密——然后告诉他们,每年需要做一件事：</p>
+            <p style="text-align: center; font-style: italic; opacity: 1; color: #ff6666; font-size: 1.1em;">举办一场派对。邀请一百个聪明人。让他们解谜。让他们恐惧。<br>喂饱房子。</p>
+        </div>
+
+        <div class="lore-section">
+            <h3>你以为这是一场游戏</h3>
+            <p>一场沉浸式谋杀悬疑派对。你甚至签了免责协议,笑着拍了照。但从你踏进门槛的那一刻起,房子就开始进食了。</p>
+            <p>每一个谜题都是精心设计的刺激。当你皱起眉头思考,当你和队友激烈讨论,当你突然顿悟——那些神经活动,那些智力的火焰,房子都能感知到。墙壁在轻微颤抖,地板在无声地呼吸,空气本身变得粘稠而饥渴。</p>
+            <p>Aaron的死不是意外,也不是真正的谋杀。这是"开胃菜"——一个完美的、戏剧性的催化剂,用来点燃你们所有人的肾上腺素。恐惧让灵魂更美味,就像柠檬汁让生蚝更鲜美。</p>
+            <p>Aaron知道。他一直都知道。他是CU的一员,是去年的"祭司"。今年,他自愿成为"催化剂"——因为房子承诺了某种东西。也许是永生,也许是权力,也许只是停止做噩梦的机会。你永远不会知道真相,因为Aaron现在已经是墙壁的一部分了。</p>
         </div>
 
         <hr>
-        <p><strong>甲方：</strong> <span id="party-a"></span></p>
-        <p><strong>乙方：</strong> UCLA / USC / CU</p>
-
-        <p style="font-style: italic; color: #ff6666;">我们都知道你在说谎...</p>
+        <p><strong>甲方 (祭品):</strong> <span id="party-a"></span></p>
+        <p><strong>乙方 (容器):</strong> 1039 S Olive St / CU (及其"祭司")</p>
+        
+        <p style="font-style: italic; color: #ff6666; margin-top: 20px;">我们都知道你在说谎...</p>
         <p style="font-family: monospace; letter-spacing: 2px;">我们记住了你的气味，你的名字，你的发色，你的装扮，你踌躇的步伐，你颤抖的双手，你不安的眼神，你的一切一切...</p>
-
         <hr>
-        <p><strong>档案编号：</strong> #CU-1039-23-<span style="font-family: monospace;">10-31</span></p>
-        <p><strong>祭品姓名:</strong> <span id="user-name"></span></p>
-        <p><strong>你是否"自愿"献出你的灵魂:</strong> <span id="user-q1"></span> <span style="color: #ff4d4d; font-style: italic;">(我们都知道答案)</span></p>
-        <p><strong>橙色标记确认:</strong> <span id="user-q2"></span> <span style="opacity: 0.7;">(标记永远不会消失)</span></p>
-        <p><strong>灵魂信标:</strong> <span id="user-email"></span></p>
+
+        <p><strong>档案编号：</strong> #CU-1039-25-<span style="font-family: monospace;">10-31</span></p>
+        <p><strong>祭品 (甲方):</strong> <span id="user-name"></span></p>
+        <p><strong>你是否自愿成为祭品？:</strong> <span id="user-q1"></span> <span style="color: #ff4d4d; font-style: italic;">(我们都知道答案)</span></p>
+        <p><strong>祭品标记确认 (已选中):</strong> <span id="user-q2"></span> <span style="opacity: 0.7;">(标记永远不会消失)</span></p>
+        <p><strong>我们会在这里找到你:</strong> <span id="user-email"></span></p>
+        <p><strong>我们也会在这里找到你:</strong> <span id="user-phone"></span></p>
         <p style="font-family: monospace; color: #ff4d4d; text-align: right; font-size: 0.9em;">已编入永久档案</p>
 
+        <div style="text-align: center; margin: 25px 0;">
+            <span class="deleted-text">快逃快逃快逃快逃快逃</span>
+            <span class="revealed-text">你已经逃不掉了</span>
+        </div>
         <hr>
-        <p style="text-align: center; font-size: 1.5em; font-family: monospace; letter-spacing: 3px; color: #ff3333;">...合同成立... <span style="font-size: 0.7em; opacity: 0.7;">永无回头之路</span></p>
+
+        <div class="lore-section">
+            <h3>但仪式还有第二层目的</h3>
+            <p>CU的"祭司"们不能永远服务房子。人会变老,会失去锐气,会变得平庸。房子厌恶平庸。所以每年的"盛宴"也是一场试炼——从一百个参与者中,挑选出最聪明、最有野心、最适合的那几个——</p>
+            <p style="text-align: center; font-style: italic; opacity: 1; color: #ff6666; font-size: 1.1em;">获胜者。</p>
+            <p>你以为你赢得了游戏?你以为那句祝贺就是结局? 看看你的队友们。他们眼中有没有闪过一丝奇怪的理解?有没有在午夜时分听到建筑物在呼唤你的名字?下次做梦时,有没有看到蓝图,看到符号,看到一张无形的嘴在微笑?</p>
+            <p>房子已经在你心里种下了种子。明年,你会成为新的"祭司"。你会说服自己这是荣誉,是特权,是一个你无法拒绝的秘密。你会邀请新的一百个人,会策划新的谜题,会挑选新的"催化剂"。</p>
+            <p style="text-align: center; font-style: italic; opacity: 1; color: #ff6666; font-size: 1.1em;">因为现在,你理解了规则。</p>
+        </div>
+
+        <p style="text-align: center; font-size: 1.5em; font-family: monospace; letter-spacing: 3px; color: #ff3333; margin-top: 30px;">...合同成立... <span style="font-size: 0.7em; opacity: 0.7;">永无回头之路</span></p>
         <p style="text-align: right; font-size: 0.8em; font-style: italic; color: #ff6666; margin-top: 20px;">档案永久保存于 1039 S Olive St</p>
+
+        <div class="lore-section" style="border-top: 1px solid #440000; border-bottom: none; padding-bottom: 0;">
+            <p>外面,洛杉矶的夜晚像往常一样继续。车灯划过窗帘,远处传来警笛声。房子静静地站在那里,像它过去96年里每一个夜晚那样。外墙上的裂缝看起来像微笑的褶皱。</p>
+            <p>它吃饱了。至少,这一年吃饱了。</p>
+            <p>明年十月,它又会饿的。</p>
+            <p>到时候,会有新的一百个人走进门。他们会笑,会解谜,会尖叫,会以为自己很聪明。而你,如果你赢了,你会站在门口微笑着欢迎他们。</p>
+            <p style="text-align: center; font-style: italic; opacity: 1; color: #ff6666; font-size: 1.1em;">因为现在,你也是房子的一部分了。</p>
+        </div>
+
+        <p class="final-hunger">
+            橄榄街1039号敬候您的光临。<br>
+            我们永远饥饿。
+        </p>
     </div>
 
-    <!-- Loading 覆盖层 -->
+    <div id="share-overlay" style="position:fixed;inset:0;background:#000;color:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:1500;visibility:hidden;opacity:0;transition:opacity 0.3s,visibility 0.3s;">
+        <div class="eyes-container" style="width:300px;height:150px;margin-bottom:30px;opacity:0;transition:opacity 0.5s;">
+            <img src="data:image/jpeg;base64,/9j/4QC8RXhpZgAASUkqAAgAAAAGABIBAwABAAAAAQAAABoBBQABAAAAVgAAABsBBQABAAAAXgAAACgBAwABAAAAAgAAABMCAwABAAAAAQAAAGmHBAABAAAAZgAAAAAAAABIAAAAAQAAAEgAAAABAAAABgAAkAcABAAAADAyMTABkQcABAAAAAECAwAAoAcABAAAADAxMDABoAMAAQAAAP//AAACoAQAAQAAAAAFAAADoAQAAQAAANACAAAAAAAA/9sAQwAGBgYGBwYHCAgHCgsKCwoPDgwMDg8WEBEQERAWIhUZFRUZFSIeJB4cHiQeNiomJio2PjQyND5MRERMX1pffHyn/9sAQwEGBgYGBwYHCAgHCgsKCwoPDgwMDg8WEBEQERAWIhUZFRUZFSIeJB4cHiQeNiomJio2PjQyND5MRERMX1pffHyn/8AAEQgC0AUAAwEiAAIRAQMRAf/EABwAAQABBQEBAAAAAAAAAAAAAAAFAQIDBAYHCP/EADIQAQABBAEEAQMDAQgDAQAAAAABAgMEESEFEjFBUQZhcRMUIoEHFSMyUpGhsSQzQsH/xAAUAQEAAAAAAAAAAAAAAAAAAAAA/8QAFBEBAAAAAAAAAAAAAAAAAAAAAP/aAAwDAQACEQMRAD8A+VAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA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AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAH/9k=" alt="Eyes in darkness" style="width:100%;height:100%;object-fit:contain;filter:brightness(0.9) contrast(1.2);">
+        </div>
+        <div class="msg" style="font-size:28px;letter-spacing:2px;color:#ff2b2b;font-weight:700;cursor:pointer;opacity:0;transition:opacity 0.5s;">你以为你很聪明？我一直在看着你。</div>
+        
+        <div id="share-flash-container" style="position:absolute; inset:0; width:100%; height:100%; overflow:hidden; pointer-events:none;">
+            </div>
+    </div>
+
     <div class="loading-overlay" id="loading-overlay">
         <div class="loading-spinner"></div>
         <div class="loading-message" id="loading-message"></div>
     </div>
 
     <script>
+        // --- 辅助函数 (保持不变) ---
+
         // 加载消息序列
         const loadingMessages = [
             '...正在处理您的"反馈"...',
@@ -250,83 +251,291 @@
             
             for (const msg of loadingMessages) {
                 message.textContent = msg;
-                await new Promise(resolve => setTimeout(resolve, 1500)); // 每条消息显示1.5秒
+                await new Promise(resolve => setTimeout(resolve, 1500));
             }
             
-            // 最后一条消息多停留一会
             await new Promise(resolve => setTimeout(resolve, 1000));
-            
             overlay.classList.remove('visible');
-            return new Promise(resolve => setTimeout(resolve, 300)); // 等待渐隐完成
+            return new Promise(resolve => setTimeout(resolve, 300));
         }
 
-        // 关键的JS代码
-        document.getElementById("submit-btn").onclick = async function(event) {
-            // 1. 阻止表单真的"提交"
-            event.preventDefault();
+        function sleep(ms) { return new Promise(resolve => setTimeout(resolve, ms)); }
 
-            // 2. 抓取用户输入的值
-            var name = document.getElementById("name").value;
-            var email = document.getElementById("email").value;
-            var q1 = document.getElementById("q1").value;
-            var q2 = document.getElementById("q2").value;
+        async function sendSubmission(payload) {
+            try {
+                await fetch('/submit', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+            } catch (e) {
+                console.warn('提交到后台失败：', e);
+            }
+        }
 
-            // 清除之前的错误提示
-            var errName = document.getElementById('error-name');
-            var errEmail = document.getElementById('error-email');
-            errName.style.display = 'none';
-            errEmail.style.display = 'none';
+        // --- 逻辑重构 ---
 
-            // 基本校验：名字和邮箱为必填，邮箱做简单格式检查
-            var firstErrorEl = null;
-            if (!name || name.trim() === "") {
-                errName.style.display = 'block';
-                if (!firstErrorEl) firstErrorEl = document.getElementById('name');
+        /**
+         * *** 新函数 (替换 doFlashSequence) ***
+         * 仅负责在 #share-flash-container 中创建并启动闪烁文字动画。
+         * 它不管理任何遮罩层的显示或隐藏，也不等待。
+         */
+        function startFlashSequence(count = 10) {
+            const container = document.getElementById('share-flash-container');
+            if (!container) return;
+            
+            container.innerHTML = ''; // 清除旧的
+
+            for (let i = 0; i < count; i++) {
+                const el = document.createElement('div');
+                el.className = 'flash-item';
+                el.textContent = '你无处可逃';
+                
+                const size = 5 + Math.random() * 4; // 5vw to 9vw
+                const rotation = -20 + Math.random() * 40; // -20deg to +20deg
+                const skewX = -10 + Math.random() * 20; // -10deg to +10deg
+                const left = 5 + Math.random() * 90; // 5% to 95%
+                const top = 5 + Math.random() * 90;  // 5% to 95%
+                
+                Object.assign(el.style, {
+                    position: 'absolute',
+                    left: `${left}%`,
+                    top: `${top}%`,
+                    color: '#ff1111',
+                    fontWeight: '900',
+                    fontSize: `${size}vw`,
+                    textShadow: '0 0 15px rgba(255,0,0,0.7), 0 0 30px rgba(255,0,0,0.5)',
+                    transform: `rotate(${rotation}deg) skew(${skewX}deg)`,
+                    whiteSpace: 'nowrap',
+                    pointerEvents: 'none', // 确保文字本身不拦截点击
+                    opacity: '0',
+                    transition: 'opacity 300ms ease-out'
+                });
+                
+                container.appendChild(el);
             }
 
-            var emailVal = email || '';
+            // 按 100ms 间隔错开显示，并启动闪烁动画
+            const items = container.querySelectorAll('.flash-item');
+            items.forEach((it, idx) => {
+                setTimeout(() => {
+                    it.style.opacity = '1';
+                    it.style.animation = 'chaotic-flicker 2s infinite';
+                }, idx * 100); // 100ms 错开 (10 * 100ms = 1秒内全部出现)
+            });
+        }
+
+        /**
+         * *** 重构的函数 (替换 waitForShareClick) ***
+         * 管理从显示眼睛到第二次点击的整个多阶段序列。
+         * 返回一个 Promise，该 Promise 仅在第二次点击后才 resolve。
+         */
+        function handleOverlaySequence() {
+            return new Promise(resolve => {
+                const overlay = document.getElementById('share-overlay');
+                const eyesContainer = overlay.querySelector('.eyes-container');
+                const msgEl = overlay.querySelector('.msg');
+                const flashContainer = document.getElementById('share-flash-container');
+                
+                // 1: 仅显示眼睛, 2: 已显示文字, 3: 已显示闪烁文字, 4: 正在过渡到合同
+                let phase = 1; 
+                
+                // 重置状态
+                flashContainer.innerHTML = '';
+                
+                // 过渡到合同的函数
+                const startContractTransition = () => {
+                    if (phase === 4) return; // 防止重复触发
+                    phase = 4;
+                    
+                    // 移除事件监听器
+                    overlay.removeEventListener('click', onClick);
+                    
+                    // 渐变到纯红色
+                    overlay.style.transition = 'background 0.5s ease-out';
+                    overlay.style.background = '#ff0000';
+                    
+                    // 0.8秒后开始过渡
+                    setTimeout(() => {
+                        // 淡出overlay
+                        overlay.style.transition = 'opacity 0.8s ease-out';
+                        overlay.style.opacity = '0';
+                        
+                        // 文字变黑
+                        const flashItems = flashContainer.querySelectorAll('.flash-item');
+                        flashItems.forEach(item => {
+                            item.style.transition = 'color 0.5s ease-out';
+                            item.style.color = '#000000';
+                            item.style.textShadow = '0 0 15px rgba(0,0,0,0.7), 0 0 30px rgba(0,0,0,0.5)';
+                        });
+                        
+                        // 显示合同
+                        const contract = document.getElementById("contract");
+                        contract.style.display = "block";
+                        contract.style.opacity = "0";
+                        contract.style.transition = "opacity 0.8s ease-in";
+                        
+                        setTimeout(() => {
+                            contract.style.opacity = "1";
+                            document.getElementById("form-container").style.display = "none";
+                            document.body.style.backgroundColor = "#000000";
+                            document.body.style.transition = "background-color 0.8s ease-in";
+                            
+                            setTimeout(() => {
+                                overlay.style.visibility = 'hidden';
+                                resolve();
+                            }, 800);
+                        }, 100);
+                    }, 800);
+                };
+                
+                // 阶段 1: 显示眼睛
+                overlay.style.visibility = 'visible';
+                overlay.style.opacity = '1';
+                eyesContainer.style.opacity = '1';
+                msgEl.style.opacity = '0';
+                
+                const advanceToPhase2 = () => {
+                    if (phase === 1) {
+                        msgEl.style.opacity = '1';
+                        phase = 2;
+                    }
+                };
+
+                // 阶段 2: 2秒后自动显示文字
+                const timer = setTimeout(advanceToPhase2, 2000);
+                
+                const onClick = () => {
+                    if (phase === 1) {
+                        // 如果用户在文字出现前点击，立即显示文字
+                        clearTimeout(timer);
+                        advanceToPhase2();
+                    
+                    } else if (phase === 2) {
+                        // *** 第一次点击 (阶段 3) ***
+                        phase = 3; // 立即更新阶段，防止重复触发
+                        
+                        // 开始闪烁
+                        startFlashSequence(10);
+                        
+                        // 增加红色背景渐变过程
+                        overlay.style.background = 'rgba(0,0,0,1)';
+                        setTimeout(() => {
+                            overlay.style.transition = 'background 1.5s ease-in';
+                            overlay.style.background = 'rgba(255,0,0,0.95)';
+                            
+                            // 在这里添加3秒后自动进入合同的逻辑
+                            setTimeout(() => {
+                                if (phase === 3) { // 只有在还没点击的情况下才自动触发
+                                    startContractTransition();
+                                }
+                            }, 3000);
+                        }, 1500);
+                    
+                    } else if (phase === 3) {
+                        // *** 第二次点击 (阶段 4) ***
+                        startContractTransition();
+                    }
+                };
+                
+                overlay.addEventListener('click', onClick);
+                
+                overlay.addEventListener('click', onClick);
+            });
+        }
+
+        /**
+         * *** 重构的主提交函数 ***
+         */
+        document.getElementById("submit-btn").onclick = async function(event) {
+            event.preventDefault();
+
+            // 1. 验证逻辑 (保持不变)
+            var name = (document.getElementById("name").value || '').trim();
+            var email = (document.getElementById("email").value || '').trim();
+            var phone = (document.getElementById("phone").value || '').trim();
+            var q1 = (document.getElementById("q1").value || '').trim();
+            var q2 = (document.getElementById("q2").value || '').trim();
+
+            var errName = document.getElementById('error-name');
+            var errEmail = document.getElementById('error-email');
+            var errPhone = document.getElementById('error-phone');
+            var errQ1 = document.getElementById('error-q1');
+            var errQ2 = document.getElementById('error-q2');
+            errName.style.display = 'none';
+            errEmail.style.display = 'none';
+            errPhone.style.display = 'none';
+            errQ1.style.display = 'none';
+            errQ2.style.display = 'none';
+
+            var firstErrorEl = null;
+            if (!name) {
+                errName.style.display = 'block';
+                firstErrorEl = document.getElementById('name');
+            }
             var emailRe = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-            if (!emailVal || !emailRe.test(emailVal)) {
+            if (!email || !emailRe.test(email)) {
                 errEmail.style.display = 'block';
                 if (!firstErrorEl) firstErrorEl = document.getElementById('email');
             }
-
-            if (firstErrorEl) {
-                firstErrorEl.focus();
-                return; // 阻止后续逻辑
+            var phoneRe = /^[0-9+\-\s()]{4,20}$/;
+            if (!phone || !phoneRe.test(phone)) {
+                errPhone.style.display = 'block';
+                if (!firstErrorEl) firstErrorEl = document.getElementById('phone');
             }
-
-            // 如果名字为空但校验通过（极端情况），给个默认值
-            if (!name || name.trim() === "") {
-                name = "一位\u201c聪明\u201d的宾客";
+            if (!q1) {
+                errQ1.style.display = 'block';
+                if (!firstErrorEl) firstErrorEl = document.getElementById('q1');
             }
+            if (!q2) {
+                errQ2.style.display = 'block';
+                if (!firstErrorEl) firstErrorEl = document.getElementById('q2');
+            }
+            if (firstErrorEl) { firstErrorEl.focus(); return; }
+            if (!name) name = '一位\u201c聪明\u201d的宾客';
 
-            // 特殊名字检测（不区分大小写），若匹配则跳转到单句页面
-            var nameLower = name.toLowerCase();
-            if (nameLower.indexOf('lin') !== -1 || nameLower.indexOf('aaron') !== -1 || nameLower.indexOf('fuck') !== -1) {
-                // 显示加载序列后再跳转
-                await showLoadingSequence();
-                window.location.href = 'stare.html';
+            // 检查否定回答
+            const negativeAnswers = ['no', 'nope', 'never', '不', '否', '没有', '不是', '不行'];
+            const isNegative = answer => negativeAnswers.some(neg => answer.toLowerCase().includes(neg));
+            if (isNegative(q1) || isNegative(q2)) {
+                // 如果任何一个问题回答否定，显示警告弹窗
+                alert("你真的这么想？");
                 return;
             }
 
-            // 显示加载序列
+            // 2. 显示加载动画
             await showLoadingSequence();
 
-            // 3. 把值注入到"契约"中
+            // 3. 发送数据 (不阻塞)
+            const payload = {
+                name, email, phone, q1, q2, ua: navigator.userAgent, ts: new Date().toISOString()
+            };
+            sendSubmission(payload);
+
+            // 4. *** 运行新的多阶段序列 ***
+            //    这将等待直到用户 *第二次* 点击
+            await handleOverlaySequence();
+
+            // 5. *** 第二次点击后 ***
+            //    手动淡出 #share-overlay (它现在包含了所有东西)
+            const shareOverlay = document.getElementById('share-overlay');
+            shareOverlay.style.transition = 'opacity 0.4s, visibility 0.4s';
+            shareOverlay.style.opacity = '0';
+            shareOverlay.style.visibility = 'hidden';
+            
+            // 等待淡出动画完成
+            await sleep(450);
+
+            // 6. 显示最终的合同页面
             document.getElementById("user-name").textContent = name;
             document.getElementById("user-email").textContent = email;
+            document.getElementById("user-phone").textContent = phone;
             document.getElementById("user-q1").textContent = q1;
             document.getElementById("user-q2").textContent = q2;
-            // 注入甲方（将甲方设置为提交的名字）
-            var partyA = document.getElementById('party-a');
-            if (partyA) partyA.textContent = name;
+            document.getElementById('party-a').textContent = name; // 确保甲方也被填充
 
-            // 4. 隐藏“表单”，显示“契约”
             document.getElementById("form-container").style.display = "none";
             document.getElementById("contract").style.display = "block";
-
-            // 5. 改变背景，增加恐怖感
             document.body.style.backgroundColor = "#000000";
         };
     </script>
